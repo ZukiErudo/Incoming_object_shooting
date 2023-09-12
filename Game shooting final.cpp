@@ -42,7 +42,7 @@ int main()
 		LOCATE(10, 40), cout << "-Press ESC to stop the game.";
 		LOCATE(11, 40), cout << "-You have ten lives and 100% of shield persistence.";
 		LOCATE(12, 40), cout << "-Do not let the enemy hit you or hit the shield.";
-		LOCATE(13, 40), cout << "-You will win if you get 10 scores.";
+		LOCATE(13, 40), cout << "-You will win if you get 10 scores and beat the final boss.";
 		LOCATE(15, 40), cout << "GOOD LUCK!";
 		LOCATE(18, 40), cout << "Press any button to continue!";
 	}
@@ -362,9 +362,187 @@ int main()
 			if (count == 15)
 			{
 				CLS;
-				LOCATE(7, 49), cout << "You win!";
-				LOCATE(10, 40), cout << "Press any key to continue";
-				break;
+
+				int a, boss_y, boss_x = 100;
+				string line(119, '_'), edge("|"), arrow("-->");
+				int x = 28, y = 13, old_x, old_y, c, d{}, pre_y = 13,
+					arrow_y, arrow_x, boss_lives = 5;
+				bool collision = false;
+
+				LOCATE(1, 2); cout << line;
+				LOCATE(25, 2); cout << line;
+
+				for (int row_number = 2; row_number <= 25; ++row_number)
+					LOCATE(row_number, 1), cout << edge;
+				for (int row_number = 2; row_number <= 25; ++row_number)
+					LOCATE(row_number, 121), cout << edge;
+
+				time_t sec;
+				time(&sec);
+				srand((unsigned)sec);
+
+				while (true)
+				{
+					a = rand();
+					if (a >= 3 && a <= 16)
+					{
+						boss_y = a;
+
+						LOCATE(boss_y, boss_x), cout << "_____________";
+						LOCATE(boss_y + 1, boss_x), cout << "|\\         /|";
+						LOCATE(boss_y + 2, boss_x), cout << "| \\       / |";
+						LOCATE(boss_y + 3, boss_x), cout << "|  \\     /  |";
+						LOCATE(boss_y + 4, boss_x), cout << "|           |";
+						LOCATE(boss_y + 5, boss_x), cout << "| --------- |";
+						LOCATE(boss_y + 6, boss_x), cout << "|           |";
+						LOCATE(boss_y + 7, boss_x), cout << "-------------";
+						break;
+					}
+				}
+
+				while (true)
+				{
+					for (long wait = 0; wait < DELAY; ++wait);
+
+					LOCATE(boss_y, boss_x), cout << "             ";
+					LOCATE(boss_y + 1, boss_x), cout << "             ";
+					LOCATE(boss_y + 2, boss_x), cout << "             ";
+					LOCATE(boss_y + 3, boss_x), cout << "             ";
+					LOCATE(boss_y + 4, boss_x), cout << "             ";
+					LOCATE(boss_y + 5, boss_x), cout << "             ";
+					LOCATE(boss_y + 6, boss_x), cout << "             ";
+					LOCATE(boss_y + 7, boss_x), cout << "             ";
+
+					--boss_x;
+
+					LOCATE(boss_y, boss_x), cout << "_____________";
+					LOCATE(boss_y + 1, boss_x), cout << "|\\         /|";
+					LOCATE(boss_y + 2, boss_x), cout << "| \\       / |";
+					LOCATE(boss_y + 3, boss_x), cout << "|  \\     /  |";
+					LOCATE(boss_y + 4, boss_x), cout << "|           |";
+					LOCATE(boss_y + 5, boss_x), cout << "| --------- |";
+					LOCATE(boss_y + 6, boss_x), cout << "|           |";
+					LOCATE(boss_y + 7, boss_x), cout << "-------------";
+
+
+					LOCATE(y, x), cout << "0";
+					old_y = y, old_x = x;
+
+					if (_kbhit() != 0)
+					{
+						c = _getch();
+
+						if (c == 75)
+							x = x - 3;
+						else if (c == 77)
+							x = x + 3;
+						else if (c == 80)
+							++y;
+						else if (c == 72)
+							--y;
+						else if ((c == 32) && (collision == false))
+						{
+							LOCATE(y, x), cout << arrow;
+							arrow_y = y, arrow_x = x;
+							d = c, collision = true;
+						}
+						else if (c == 27)
+						{
+							CLS;
+							LOCATE(7, 40), cout << "Thanks for playing the game!";
+							LOCATE(26, 1);
+							break;
+						}
+
+						LOCATE(old_y, old_x); cout << " ";
+					}
+
+
+					if ((y >= boss_y) && (y <= boss_y + 7) && boss_x == x)
+					{
+						break;
+					}
+					else if ((y >= boss_y) && (y <= boss_y + 7) && ((boss_x - x) == 1))
+					{
+						break;
+					}
+					else if ((y >= boss_y) && (y <= boss_y + 7) && ((boss_x - x) == -1) && y == pre_y)
+					{
+						break;
+					}
+					else if ((y >= boss_y) && (y <= boss_y + 7) && ((boss_x - x) == -2) && y == pre_y)
+					{
+						break;
+					}
+
+
+					pre_y = y;
+
+					if (d == 32)
+					{
+						LOCATE(arrow_y, arrow_x); cout << "   ";
+						arrow_x += 5;
+						LOCATE(arrow_y, arrow_x); cout << arrow;
+
+						if (arrow_x >= 118)
+						{
+							d = 0, collision = false;
+							LOCATE(arrow_y, arrow_x); cout << "   ";
+							LOCATE(arrow_y, 121), cout << "|";
+						}
+
+						if ((arrow_y >= boss_y) && (arrow_y <= boss_y + 7) && ((boss_x - arrow_x) <= 3) && boss_x >= x)
+						{
+							d = 0, collision = false;
+							LOCATE(arrow_y, arrow_x); cout << "   ";
+							--boss_lives;
+						}
+
+					}
+
+
+					if (y == 1)
+					{
+						LOCATE(y, x), cout << '_';
+						++y;
+					}
+					else if (y == 25)
+					{
+						LOCATE(y, x), cout << '_';
+						--y;
+					}
+					else if (x == 1)
+					{
+						LOCATE(y, 1), cout << '|';
+						x = x + 3;
+					}
+					else if (x == 100)
+					{
+						LOCATE(y, 1), cout << '|';
+						x = x - 3;
+					}
+
+					if (boss_lives == 0)
+						break;
+
+					if (boss_x == 1)
+						break;
+				}
+
+				CLS;
+
+				if (boss_lives == 0)
+				{
+					LOCATE(7, 49), cout << "You win!";
+					LOCATE(10, 40), cout << "Press any key to continue";
+					break;
+				}
+				else if (boss_lives != 0)
+				{
+					LOCATE(7, 49), cout << "Game over";
+					LOCATE(10, 40), cout << "Press any key to continue";
+					break;
+				}
 			}
 		}
 
@@ -422,4 +600,6 @@ void shield(int value)
 }
 
 /*The end*/
+
+/*Septemper 12 2023*/
 /*Written by Zuki Erudo*/
