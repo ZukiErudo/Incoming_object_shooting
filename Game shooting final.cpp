@@ -24,43 +24,40 @@ void shield(int value);
 
 int main()
 {
-	string text;
-	
-	while (true)
+	COLOR(GREEN, BLACK);
+	string text, answer;
+
+	do
 	{
-		COLOR(GREEN, BLACK);
-		string text, answer;
+		LOCATE(7, 40), cout << "Do you want to play this game (yes/no)?: ";
+		getline(cin, text);
+		CLS;
+	} while (text != "yes" && text != "no");
 
-		do
+	if (text == "yes")
+	{
+		LOCATE(7, 40), cout << "Instruction:";
+		LOCATE(8, 40), cout << "-Use arrow buttons to control the object.";
+		LOCATE(9, 40), cout << "-Use space button to shoot.";
+		LOCATE(10, 40), cout << "-Press ESC to stop the game.";
+		LOCATE(11, 40), cout << "-You have ten lives and 100% of shield persistence.";
+		LOCATE(12, 40), cout << "-Do not let the enemy hit you or hit the shield.";
+		LOCATE(13, 40), cout << "-You will win if you get 10 scores.";
+		LOCATE(15, 40), cout << "GOOD LUCK!";
+		LOCATE(18, 40), cout << "Press any button to continue!";
+	}
+
+	while (text == "yes")
+	{
+		if (_kbhit() != 0)
 		{
-			LOCATE(7, 40), cout << "Do you want to play this game (yes/no)?: ";
-			getline(cin, text);
 			CLS;
-		} while (text != "yes" && text != "no");
-
-		if (text == "yes")
-		{
-			LOCATE(7, 40), cout << "Instruction:";
-			LOCATE(8, 40), cout << "-Use arrow buttons to control the object.";
-			LOCATE(9, 40), cout << "-Use space button to shoot.";
-			LOCATE(10, 40), cout << "-Press ESC to stop the game.";
-			LOCATE(11, 40), cout << "-You have ten lives and 100% of shield persistence.";
-			LOCATE(12, 40), cout << "-Do not let the enemy hit you or hit the shield.";
-			LOCATE(13, 40), cout << "-You will win if you get 10 scores.";
-			LOCATE(15, 40), cout << "GOOD LUCK!";
-			LOCATE(18, 40), cout << "Press any button to continue!";
+			break;
 		}
+	}
 
-		while (text == "yes")
-		{
-			if (_kbhit() != 0)
-			{
-				CLS;
-				break;
-			}
-		}
-
-
+	while (text == "yes")
+	{
 		bool collision = false;
 		int x = 28, y = 13, old_x, old_y, c, d{}, row_number, count = 0, pre_y = 13,
 			shield_persistence = 100, lives = 10;
@@ -101,7 +98,7 @@ int main()
 			}
 		}
 
-		while (text == "yes")
+		while (true)
 		{
 			for (long wait = 0; wait < DELAY; ++wait);
 
@@ -372,7 +369,7 @@ int main()
 		}
 
 
-		while (text == "yes")
+		while (true)
 		{
 			if (_kbhit() != 0)
 			{
@@ -397,15 +394,13 @@ int main()
 			LOCATE(26, 1);
 			break;
 		}
+	}
 
-		if (text == "no")
-		{
-			CLS;
-			LOCATE(7, 40), cout << "Goodbye!";
-			LOCATE(26, 1);
-			break;
-		}
-
+	if (text == "no")
+	{
+		CLS;
+		LOCATE(7, 40), cout << "Goodbye!";
+		LOCATE(26, 1);
 	}
 
 	return 0;
